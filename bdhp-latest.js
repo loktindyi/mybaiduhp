@@ -6,7 +6,7 @@
 // @match        https://www.baidu.com/
 // @match        https://www.baidu.com/?bs_nt=1
 // @match        https://www.baidu.com/?tn=baiduhome_pg
-// @description  百度首页自定义logo、按钮搜索框颜色、文字 !不可登录! 反馈群：884813590 [Lt.II]科技星凰
+// @description  百度首页自定义logo、按钮搜索框颜色、文字 !不可登录! 反馈群：884813590 Tri 科技星凰
 // @supportURL    https://jq.qq.com/?_wv=1027&k=IMqY916N
 // @feedback-url  https://jq.qq.com/?_wv=1027&k=IMqY916N
 // @updateURL    https://github.com/loktindyi/mybaiduhp/blob/master/bdhp-latest.js
