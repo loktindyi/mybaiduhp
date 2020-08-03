@@ -1,19 +1,20 @@
 // ==UserScript==
 // @name         众里寻他千百度
-// @version      3.9
+// @version      3.91
 // @author       哔哩哔哩@言叶与言
 // @namespace    https://space.bilibili.com/379335206
 // @match        https://www.baidu.com/
 // @match        https://www.baidu.com/?bs_nt=1
 // @match        https://www.baidu.com/?tn=baiduhome_pg
 // @description  百度首页自定义 不可登录 反馈群：884813590 Tri 科技星凰
-// @supportURL   https://jq.qq.com/?_wv=1027&k=IMqY916N
-// @feedback-url https://jq.qq.com/?_wv=1027&k=IMqY916N
+// @supportURL   https://github.com/loktindyi/mybaiduhp/issues
 // @updateURL    https://cdn.jsdelivr.net/gh/loktindyi/mybaiduhp@master/bdhp-latest.user.js
 // @grant        GM_addStyle
+// @grant        GM_registerMenuCommand
 // @note         3.7 百度改版 重新优化 但搜索预测无法启用
 // @note         3.8 解决了3.7无法启用搜索预测的问题
 // @note         3.9 优化了搜索预测的边框
+// @note         3.91 添加“加入星凰”菜单项 跳转至群|“报告BUG”跳转至github
 // ==/UserScript==
 
 
@@ -170,4 +171,5 @@
 	$("#s_qrcode_nologin").remove();
 	//bottom
 	$("#bottom_layer").remove();
+	GM_registerMenuCommand("加入星凰",function(){window.open("https://jq.qq.com/?_wv=1027&k=IMqY916N")});
 })();
