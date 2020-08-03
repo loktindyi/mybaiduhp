@@ -1,16 +1,19 @@
 // ==UserScript==
 // @name         众里寻他千百度
-// @version      3.8
+// @version      3.9
 // @author       哔哩哔哩@言叶与言
 // @namespace    https://space.bilibili.com/379335206
 // @match        https://www.baidu.com/
 // @match        https://www.baidu.com/?bs_nt=1
 // @match        https://www.baidu.com/?tn=baiduhome_pg
-// @description  百度首页自定义logo、按钮搜索框颜色、文字 !不可登录! 反馈群：884813590 Tri 科技星凰
-// @supportURL    https://jq.qq.com/?_wv=1027&k=IMqY916N
-// @feedback-url  https://jq.qq.com/?_wv=1027&k=IMqY916N
+// @description  百度首页自定义 不可登录 反馈群：884813590 Tri 科技星凰
+// @supportURL   https://jq.qq.com/?_wv=1027&k=IMqY916N
+// @feedback-url https://jq.qq.com/?_wv=1027&k=IMqY916N
 // @updateURL    https://cdn.jsdelivr.net/gh/loktindyi/mybaiduhp@master/bdhp-latest.user.js
 // @grant        GM_addStyle
+// @note         3.7 百度改版 重新优化 但搜索预测无法启用
+// @note         3.8 解决了3.7无法启用搜索预测的问题
+// @note         3.9 优化了搜索预测的边框
 // ==/UserScript==
 
 
@@ -51,8 +54,8 @@
 		"_btn": " ", //自定义按钮文字
 		"_news": 1, //新闻(非热搜) 黑色/关闭/白色 [0, 2]
 		"_ipos": 90, //搜索框位置(上下) [默认值:90]
-		"_fz": 16, //输入框字体大小 [默认值:16]
-		"_ct": 1, //输入框内文字居中
+		"_fz": 18, //输入框字体大小 [默认值:16]
+		"_ct": 1, //输入框内文字居中 暂不开放样式1
 		//包括 搜索框、按钮 和 logo底色 (_search != 0)
 
 //=====样式1=====//
@@ -142,20 +145,21 @@
 		while (soutu){if (_set._soutu){soutu.parentNode.removeChild(soutu);}else{soutu.style = "background-color: transparent;";}} //搜图按钮美化
 		clearTimeout(sot);
 	},100);
-	setTimeout(()=>{while (btn.value == "百度一下"){if (_set._btn){btn.value = _set._btn;}}},50);// "百度一下"按钮文字自定义
-	//搜索预测 【实验性】
-	//$(".bdsug-new").css("border-color", null);
-	//GM_addStyle(`.bdsugbg{border-width: 0px !important;border: null !important; opacity: 0.3; background-color: rgba(250, 114, 152, 0)}`);
-	//光标、字和搜索框颜色 底色
+	setTimeout(()=>{while (btn.value == "百度一下"){if (_set._btn){btn.value = _set._btn;}}},50); //按钮文字
+	//光标、字和搜索框颜色 底色 搜索预测 【实验性】
 	var kw = document.getElementById("kw");
 	kw.autofocus = "autofocus";
-	if (_sw && _set._ct){var _ctr = " text-align: center";}else{var _ctr = " ";}
+	var _ctr;
+	if (_sw && _set._ct){_ctr = " text-align: center; text-indent: 135px;";}else{_ctr = "";}
 	if (_sw == 1){
-		kw.style = "background-color: rgba(" + _set._thm1 + ", " + _set._bcop1 + "); color: " + _set._ipfc1 + "; border-color: rgba(" + _set._thm1 + ", " + _set._bdop1 + ") !important; border-style: solid none solid solid; font-size: " + _set._fz + "px;" + _ctr; //样式1
+		kw.style = "background-color: rgba(" + _set._thm1 + ", " + _set._bcop1 + "); color: " + _set._ipfc1 + "; border-color: rgba(" + _set._thm1 + ", " + _set._bdop1 + ") !important; border-style: solid none solid solid; font-size: " + _set._fz + "px;"; //样式1
+		GM_addStyle("#head_wrapper #form .bdsug-new{border-color: rgba(" + _set._thm1 + ", " + _set._bdop1 + ") !important;}");
 	} else if (_sw == 2){
 		kw.style = "background-color: rgba(" + _set._thm2 + ", " + _set._bcop2 + "); color: " + _set._ipfc2 + "; border-color: rgba(" + _set._thm2 + ", " + _set._bdop2 + ") !important; border-style: solid none solid solid; font-size: " + _set._fz + "px;" + _ctr; //样式2
+		GM_addStyle("#head_wrapper #form .bdsug-new{border-color: rgba(" + _set._thm2 + ", " + _set._bdop2 + ") !important;}");
 	} else if (_sw == 3){
 		kw.style = "background-color: rgba(" + _set._thm3 + ", " + _set._bcop3 + "); color: " + _set._ipfc2 + "; border-color: rgba(" + _set._thm3 + ", " + _set._bdop3 + ") !important; border-style: solid none solid solid; font-size: " + _set._fz + "px;" + _ctr; //样式3
+		GM_addStyle("#head_wrapper #form .bdsug-new{border-color: rgba(" + _set._thm3 + ", " + _set._bdop3 + ") !important;}");
 	}
 	//可能会出现的news
 	if (_set._news){
