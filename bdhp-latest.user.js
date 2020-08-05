@@ -1,25 +1,26 @@
 // ==UserScript==
 // @name         众里寻他千百度
-// @version      3.91
+// @version      3.92
 // @author       哔哩哔哩@言叶与言
 // @namespace    https://space.bilibili.com/379335206
 // @match        https://www.baidu.com/
 // @match        https://www.baidu.com/?bs_nt=1
 // @match        https://www.baidu.com/?tn=baiduhome_pg
+// @match        https://www.baidu.com/*
 // @description  百度首页自定义 不可登录 反馈群：884813590 Tri 科技星凰
 // @supportURL   https://github.com/loktindyi/mybaiduhp/issues
 // @updateURL    https://cdn.jsdelivr.net/gh/loktindyi/mybaiduhp@master/bdhp-latest.user.js
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
-// @note         3.7 百度改版 重新优化 但搜索预测无法启用
-// @note         3.8 解决了3.7无法启用搜索预测的问题
-// @note         3.9 优化了搜索预测的边框
+// @note         3.92 搜索框内文字完全居中，文字可延伸至按钮内
 // @note         3.91 添加“加入星凰”菜单项 跳转至群|“报告BUG”跳转至github
+// @note         3.9 优化了搜索预测的边框
+// @note         3.8 解决了3.7无法启用搜索预测的问题
+// @note         3.7 百度改版 重新优化 但搜索预测无法启用
 // ==/UserScript==
 
 
 (function(){
-	'use strict';
 /***关于logo
     0.不替换logo与链接
     1.白，需要暗色调的背景
@@ -131,16 +132,16 @@
 	if (document.getElementById("head_wrapper").className = "head_wrapper s-isindex-wrap nologin"){//热榜是开启的？
 		document.getElementById("head_wrapper").style = "position: relative; top: " + _set._ipos + "px;";
 	}
-	//按钮颜色
+	//搜索按钮
 	var btn = document.getElementById("su");
 	if (_sw){
 		if (_sw == 1){btn.style = "background-color: rgba(" + _set._thm1 + ", " + _set._bdop1 + "); color: " + _set._btfc1 + ";";} //样式1
-		else if (_sw == 2){btn.style = "background-color: rgba(" + _set._thm2 + ", " + _set._bcop2 + "); color: " + _set._btfc2 + "; border: 2px rgba(" + _set._thm2 + ", " + _set._bdop2 + "); border-style: solid solid solid none;";} //样式2
-		else if (_sw == 3){btn.style = "background-color: rgba(" + _set._thm3 + ", " + _set._bcop3 + "); color: " + _set._btfc3 + "; border: 2px rgba(" + _set._thm3 + ", " + _set._bdop3 + "); border-style: solid solid solid none;";} //样式3
+		else if (_sw == 2){btn.style = "background-color: rgba(" + _set._thm2 + ", " + _set._bcop2 + "); color: " + _set._btfc2 + "; border-style:none;";} //样式2
+		else if (_sw == 3){btn.style = "background-color: rgba(" + _set._thm3 + ", " + _set._bcop3 + "); color: " + _set._btfc3 + "; border-style:none;";} //样式3
 	}
 	//删除百度热榜
 	$("#s-hotsearch-wrapper").remove();
-	//搜图按钮，搜索按钮
+	//搜图按钮
 	var sot = setTimeout(()=>{
 		var soutu = $(".soutu-btn")[0];
 		while (soutu){if (_set._soutu){soutu.parentNode.removeChild(soutu);}else{soutu.style = "background-color: transparent;";}} //搜图按钮美化
@@ -151,15 +152,15 @@
 	var kw = document.getElementById("kw");
 	kw.autofocus = "autofocus";
 	var _ctr;
-	if (_sw && _set._ct){_ctr = " text-align: center; text-indent: 135px;";}else{_ctr = "";}
+	if (_sw && _set._ct){_ctr = " text-align: center; text-indent: 0px;";}else{_ctr = "";}
 	if (_sw == 1){
 		kw.style = "background-color: rgba(" + _set._thm1 + ", " + _set._bcop1 + "); color: " + _set._ipfc1 + "; border-color: rgba(" + _set._thm1 + ", " + _set._bdop1 + ") !important; border-style: solid none solid solid; font-size: " + _set._fz + "px;"; //样式1
 		GM_addStyle("#head_wrapper #form .bdsug-new{border-color: rgba(" + _set._thm1 + ", " + _set._bdop1 + ") !important;}");
 	} else if (_sw == 2){
-		kw.style = "background-color: rgba(" + _set._thm2 + ", " + _set._bcop2 + "); color: " + _set._ipfc2 + "; border-color: rgba(" + _set._thm2 + ", " + _set._bdop2 + ") !important; border-style: solid none solid solid; font-size: " + _set._fz + "px;" + _ctr; //样式2
+		kw.style = "width: 618px !important; padding-right: 16px !important; background-color: rgba(" + _set._thm2 + ", " + _set._bcop2 + "); color: " + _set._ipfc2 + "; border-color: rgba(" + _set._thm2 + ", " + _set._bdop2 + ") !important; border-style: solid; border-radius: 10px; font-size: " + _set._fz + "px;" + _ctr; //样式2
 		GM_addStyle("#head_wrapper #form .bdsug-new{border-color: rgba(" + _set._thm2 + ", " + _set._bdop2 + ") !important;}");
 	} else if (_sw == 3){
-		kw.style = "background-color: rgba(" + _set._thm3 + ", " + _set._bcop3 + "); color: " + _set._ipfc2 + "; border-color: rgba(" + _set._thm3 + ", " + _set._bdop3 + ") !important; border-style: solid none solid solid; font-size: " + _set._fz + "px;" + _ctr; //样式3
+		kw.style = "width: 618px !important; padding-right: 16px !important; background-color: rgba(" + _set._thm3 + ", " + _set._bcop3 + "); color: " + _set._ipfc2 + "; border-color: rgba(" + _set._thm3 + ", " + _set._bdop3 + ") !important; border-style: solid; border-radius: 10px; font-size: " + _set._fz + "px;" + _ctr; //样式3
 		GM_addStyle("#head_wrapper #form .bdsug-new{border-color: rgba(" + _set._thm3 + ", " + _set._bdop3 + ") !important;}");
 	}
 	//可能会出现的news
