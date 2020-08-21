@@ -1,17 +1,19 @@
 // ==UserScript==
 // @name         众里寻他千百度
-// @version      3.92
+// @version      3.95
 // @author       哔哩哔哩@言叶与言
 // @namespace    https://space.bilibili.com/379335206
 // @match        https://www.baidu.com/
 // @match        https://www.baidu.com/?bs_nt=1
 // @match        https://www.baidu.com/?tn=baiduhome_pg
-// @match        https://www.baidu.com/*
 // @description  百度首页自定义 不可登录 反馈群：884813590 Tri 科技星凰
 // @supportURL   https://github.com/loktindyi/mybaiduhp/issues
 // @updateURL    https://cdn.jsdelivr.net/gh/loktindyi/mybaiduhp@master/bdhp-latest.user.js
 // @grant        GM_addStyle
 // @grant        GM_registerMenuCommand
+// @grant        GM_xmlhttpRequest
+// @note         3.95 【季节logo】现在logo可以跟随B站了，Bilibili Evolved称之为季节logo
+// @note         3.93 优化了搜索预测的高亮字体颜色
 // @note         3.92 搜索框内文字完全居中，文字可延伸至按钮内
 // @note         3.91 添加“加入星凰”菜单项 跳转至群|“报告BUG”跳转至github
 // @note         3.9 优化了搜索预测的边框
@@ -23,13 +25,13 @@
 (function(){
 /***关于logo
     0.不替换logo与链接
-    1.白，需要暗色调的背景
-    2.白，蓝光描边
-    3.预留
-    4.春 预留
-    5.夏
-    6.秋 预留
-    7.冬 预留
+    1.
+    2.
+    3.
+    4.
+    5.
+    6.
+    7.跟随logo
     8.自定义
     9.不显示 不能点击
     10.替换链接但不显示
@@ -39,9 +41,9 @@
 //============设置项============//
 	var _set = {
 
-//=========基本选择=========//
+//=========基本设定=========//
 		"_search": 2, //开启搜索框相关美化 有 3 个样式 [0, 3]
-		"_logo": 10, //选择logo
+		"_logo": 7, //选择logo
 
 //=========进阶设定=========//
 		"_title": "众里寻他千百度", //title自定义
@@ -58,7 +60,6 @@
 		"_ipos": 90, //搜索框位置(上下) [默认值:90]
 		"_fz": 18, //输入框字体大小 [默认值:16]
 		"_ct": 1, //输入框内文字居中 暂不开放样式1
-		//包括 搜索框、按钮 和 logo底色 (_search != 0)
 
 //=====样式1=====//
 		"_thm1": "250, 114, 152", //主题色
@@ -111,10 +112,20 @@
 	if (_set._logo){
 		var logo = document.getElementById("s_lg_img");
 		var _lgs = _set._logo;
-		if (_lgs == 1){logo.src = "https://i0.hdslb.com/bfs/archive/ade5477ac1397a2b9d87e8ec07f14e4dec1122ad.png";} //1.白，需要暗色调的背景
-		else if (_lgs == 2){logo.src = "https://i0.hdslb.com/bfs/archive/37b34681bf113d457188557bf1ddd38a9d74fa82.png";}//"https://i0.hdslb.com/bfs/archive/937937c0e70863f0fa47deeab06355b36309517d.png";} //2.白，蓝光描边
-		else if (_lgs == 3){logo.src = "https://i0.hdslb.com/bfs/archive/937937c0e70863f0fa47deeab06355b36309517d.png" ;} //3.预留
-		else if (_lgs == 5){logo.src = "https://i0.hdslb.com/bfs/archive/e62b6b095ef38dfb742687f11e4b570dde420b5d.png";} //5.夏
+		if (_lgs == 1){logo.src = "https://i0.hdslb.com/bfs/archive/ade5477ac1397a2b9d87e8ec07f14e4dec1122ad.png";}
+		else if (_lgs == 2){logo.src = "https://i0.hdslb.com/bfs/archive/37b34681bf113d457188557bf1ddd38a9d74fa82.png";}
+		else if (_lgs == 3){logo.src = "https://i0.hdslb.com/bfs/archive/f7cfff542840ef7032468076c4360ef190335e34.png" ;}
+		else if (_lgs == 5){logo.src = "https://i0.hdslb.com/bfs/archive/e62b6b095ef38dfb742687f11e4b570dde420b5d.png";}
+		else if (_lgs == 6){logo.src = "https://i0.hdslb.com/bfs/archive/90cabec45b3ee36b124b7129495c3f5fb4d9f3bc.png";}
+		else if (_lgs == 7){
+			GM_xmlhttpRequest({
+				method: "GET",
+				url: "https://api.bilibili.com/x/web-show/res/locs?pf=0&ids=142",
+				onload: function(response) {
+					logo.src = JSON.parse(response.responseText).data[142][0].litpic.replace("http:","https:");
+				}
+			});
+		} //跟随logo
 		else if (_lgs == 8){logo.src = _set._logo_re;} //8.自定义
 		else if (_lgs == 9){logo.remove();} //9.不显示
 		if (_lgs > 0 && _set._logo < 11){
@@ -126,7 +137,7 @@
 			mp.target = _set._mp_tar;
 			mp.title = _set._mp_title;
 		}
-		if (_lgs > 9 && _set._logo < 12){logo.style.opacity = "0";} //10.替换链接但不显示logo 11.不替换链接不显示logo
+		if (_lgs > 9 && _lgs < 12){logo.style.opacity = "0";} //10.替换链接但不显示logo 11.不替换链接不显示logo
 	}
 	//搜索框居中
 	if (document.getElementById("head_wrapper").className = "head_wrapper s-isindex-wrap nologin"){//热榜是开启的？
@@ -136,8 +147,8 @@
 	var btn = document.getElementById("su");
 	if (_sw){
 		if (_sw == 1){btn.style = "background-color: rgba(" + _set._thm1 + ", " + _set._bdop1 + "); color: " + _set._btfc1 + ";";} //样式1
-		else if (_sw == 2){btn.style = "background-color: rgba(" + _set._thm2 + ", " + _set._bcop2 + "); color: " + _set._btfc2 + "; border-style:none;";} //样式2
-		else if (_sw == 3){btn.style = "background-color: rgba(" + _set._thm3 + ", " + _set._bcop3 + "); color: " + _set._btfc3 + "; border-style:none;";} //样式3
+		else if (_sw == 2){btn.style = "background-color: rgba(" + _set._thm2 + ", 0); color: " + _set._btfc2 + "; border-style:none;";} //样式2
+		else if (_sw == 3){btn.style = "background-color: rgba(" + _set._thm3 + ", 0); color: " + _set._btfc3 + "; border-style:none;";} //样式3
 	}
 	//删除百度热榜
 	$("#s-hotsearch-wrapper").remove();
@@ -152,20 +163,23 @@
 	var kw = document.getElementById("kw");
 	kw.autofocus = "autofocus";
 	var _ctr;
-	if (_sw && _set._ct){_ctr = " text-align: center; text-indent: 0px;";}else{_ctr = "";}
+	if (_sw && _set._ct){_ctr = " text-align: center;";}else{_ctr = "";}
 	if (_sw == 1){
 		kw.style = "background-color: rgba(" + _set._thm1 + ", " + _set._bcop1 + "); color: " + _set._ipfc1 + "; border-color: rgba(" + _set._thm1 + ", " + _set._bdop1 + ") !important; border-style: solid none solid solid; font-size: " + _set._fz + "px;"; //样式1
 		GM_addStyle("#head_wrapper #form .bdsug-new{border-color: rgba(" + _set._thm1 + ", " + _set._bdop1 + ") !important;}");
+		GM_addStyle("#head_wrapper #form .bdsug-new .bdsug-s, #head_wrapper #form .bdsug-new .bdsug-s span, #head_wrapper #form .bdsug-new .bdsug-s b {color: " + _set._ipfc1 + ";}");
 	} else if (_sw == 2){
 		kw.style = "width: 618px !important; padding-right: 16px !important; background-color: rgba(" + _set._thm2 + ", " + _set._bcop2 + "); color: " + _set._ipfc2 + "; border-color: rgba(" + _set._thm2 + ", " + _set._bdop2 + ") !important; border-style: solid; border-radius: 10px; font-size: " + _set._fz + "px;" + _ctr; //样式2
 		GM_addStyle("#head_wrapper #form .bdsug-new{border-color: rgba(" + _set._thm2 + ", " + _set._bdop2 + ") !important;}");
+		GM_addStyle("#head_wrapper #form .bdsug-new .bdsug-s, #head_wrapper #form .bdsug-new .bdsug-s span, #head_wrapper #form .bdsug-new .bdsug-s b {color: " + _set._ipfc2 + ";}");
 	} else if (_sw == 3){
 		kw.style = "width: 618px !important; padding-right: 16px !important; background-color: rgba(" + _set._thm3 + ", " + _set._bcop3 + "); color: " + _set._ipfc2 + "; border-color: rgba(" + _set._thm3 + ", " + _set._bdop3 + ") !important; border-style: solid; border-radius: 10px; font-size: " + _set._fz + "px;" + _ctr; //样式3
 		GM_addStyle("#head_wrapper #form .bdsug-new{border-color: rgba(" + _set._thm3 + ", " + _set._bdop3 + ") !important;}");
+		GM_addStyle("#head_wrapper #form .bdsug-new .bdsug-s, #head_wrapper #form .bdsug-new .bdsug-s span, #head_wrapper #form .bdsug-new .bdsug-s b {color: " + _set._ipfc3 + ";}");
 	}
 	//可能会出现的news
 	if (_set._news){
-		if (_set._news == 1){document.getElementById("m").parentNode.removeChild(document.getElementById("m"));}
+		if (_set._news == 1){document.getElementById("m").parentNode.removeChild(document.getElementById("m"));} //这里document.getElementById("m")不能替换成$("#m")，天知道为什么
 		else if (_set._news == 2){for (var j = 0; j < 4; j++){$("#lm-new .links-link")[j].style.color = "white";}}
 	}
 	//右下键二维码
