@@ -1,20 +1,22 @@
 // ==UserScript==
-// @name         众里寻他千百度
-// @version      4.20
+// @name         众里寻她千百度
+// @version      4.21
 // @author       哔哩哔哩@言叶与言
 // @namespace    https://space.bilibili.com/379335206
 // @match        https://www.baidu.com/
 // @match        https://www.baidu.com/?bs_nt=1
-// @match        https://www.baidu.com/?tn=baiduhome_pg
+// @match        https://www.baidu.com/?tn=*
 // @description  百度首页自定义 不可登录 反馈群：884813590 Tri 科技星凰
 // @supportURL   https://github.com/loktindyi/mybaiduhp/issues
 // @updateURL    https://cdn.jsdelivr.net/gh/loktindyi/mybaiduhp@master/bdhp-latest.user.js
+// @require      https://cdn.jsdelivr.net/npm/jquery@3.4.0/dist/jquery.min.js
 // @grant        GM_addStyle
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_deleteValue
 // @grant        GM_xmlhttpRequest
 // @grant        GM_registerMenuCommand
+// @note         4.21 一些细微改动 另外，由于本人男，所以改了标题
 // @note         4.20 大改完成 完全支持保存设定
 // @note         4.10 大改基本完成
 // @note         4.05 大改，过渡版本，能用但是功能简陋、代码杂乱 支持自定义样式并存储，但设置项依旧不可存储，请等待下一个版本
@@ -60,7 +62,7 @@
 --thm-border-color: rgba(250, 114, 152, 0.7);
 }
 /*body{
-background-image: url("https://g.hiphotos.baidu.com/zhidao/pic/item/8644ebf81a4c510f973523a36b59252dd52aa592.jpg");
+background-image: url("https://g.hiphotos.baidu.com/zhidao/pic/item/8644ebf81a4c510f973523a36b59252dd52aa592.jpg")
 }*/
 `;
 	//取得用户设定，取不到则用默认设定
@@ -69,11 +71,13 @@ background-image: url("https://g.hiphotos.baidu.com/zhidao/pic/item/8644ebf81a4c
 	_uct = GM_getValue("uct",_uct);
 	//预置的必需样式
 	GM_addStyle(`
-.user-css-div{position: absolute; top: 350px; left: 2%; width: 96%; height: 360px; border: 2px solid rgba(250, 114, 152, 0.6); border-radius:15px; background-color: transparent}
-.user-set-text{width: 20%; height: 340px !important; position: fixed; left: inherit; background-color: transparent; font-size: 150%; color: #fa7298; outline: none; border: none; padding: 10px; resize: none}
-.user-set-help{width: 15%; height: 360px !important; position: fixed; left: 23.3%; background-color: transparent; font-size: 83%; color: #fa7298; outline: none; border-right: 2px solid var(--thm-border-color); text-align: left}
-.user-css-text{width: 60%; height: 340px !important; position: absolute; left: 38%; background-color: transparent; font-size: 150%; color: #fa7298; outline: none; border: none; padding: 10px}
-.user-btn{position: fixed; top: 0; left: 0; width: 10%; height: 10%; outline: none; background-color: transparent}
+#head_wrapper #form .bdsug-new ul{border-top-color: transparent}
+#head_wrapper #form .bdsug-new{background-color: var(--thm-background-color)}
+.Tri-user-css-div{position: absolute; top: 350px; left: 2%; width: 96%; height: 360px; border: 2px solid var(--thm-border-color); border-radius:15px; background-color: transparent}
+.Tri-user-set-text{width: 20%; height: 340px !important; position: fixed; left: inherit; background-color: transparent; font-size: 150%; color: #fa7298; outline: none; border: none; padding: 10px; resize: none}
+.Tri-user-set-help{width: 15%; height: 360px !important; position: fixed; left: 23.3%; background-color: transparent; font-size: 83%; color: #fa7298; outline: none; border-right: 2px solid var(--thm-border-color); text-align: left}
+.Tri-user-css-text{width: 60%; height: 340px !important; position: absolute; left: 38%; background-color: transparent; font-size: 150%; color: #fa7298; outline: none; border: none; padding: 10px}
+.Tri-user-btn{position: fixed; top: 0; left: 0; width: 10%; height: 10%; outline: none; background-color: transparent}
 `);
 	//应用用户样式
 	GM_addStyle(_uct);
@@ -137,11 +141,11 @@ body{background-size: 100%; background-attachment: fixed}
 	}
 	//菜单
 	GM_registerMenuCommand("调试样式",function(){//调试样式时，搜索预测将不可用
-		if (!$("#user-btn")[0]){$("body")[0].innerHTML += `
-<input type="button" class="user-btn" onclick="if ($('#user-css-div')[0].style.display == 'none'){$('#user-css-div')[0].style.display = 'block'}else{$('#user-css-div')[0].style.display = 'none'}">
-<div id="user-css-div" class="user-css-div" style="display: block">
-<textarea id="user-set" class="user-set-text" type="input">` + JSON.stringify(_set).replace(/,/g,",\n") + `</textarea>
-<div class="user-set-help" type="input">
+		if (!$("#Tri-user-btn")[0]){$("body")[0].innerHTML += `
+<input id="Tri-user-btn" type="button" class="Tri-user-btn" onclick="if ($('#Tri-user-css-div')[0].style.display == 'none'){$('#Tri-user-css-div')[0].style.display = 'block'}else{$('#Tri-user-css-div')[0].style.display = 'none'}">
+<div id="Tri-user-css-div" class="Tri-user-css-div" style="display: block">
+<textarea id="Tri-user-set" class="Tri-user-set-text" type="input">` + JSON.stringify(_set).replace(/,/g,",\n") + `</textarea>
+<div class="Tri-user-set-help" type="input">
 以下，除特殊说明 0表示关闭 1表示开启<br/>
 <br/>
 _search 开启搜索框自定义样式<br/>
@@ -168,10 +172,10 @@ _lgbdr logo边框圆角大小<br/>
 233 跟随哔哩哔哩<br/>
 666 自定义<br/>
 </div>
-<textarea id="user-css" class="user-css-text" onkeyup="$('#userstyle')[0].innerHTML = this.value" type="input">` + _uct + `</textarea>
-</div><style id="userstyle" type="text/css">` + _uct + `</style>`
+<textarea id="Tri-user-css" class="Tri-user-css-text" onkeyup="$('#Tri-userstyle')[0].innerHTML = this.value" type="input">` + _uct + `</textarea>
+</div><style id="Tri-userstyle" type="text/css">` + _uct + `</style>`
 							   }});
-	GM_registerMenuCommand("保存设定",function(){GM_setValue("set",JSON.parse($("#user-set")[0].value.replace(/\n/g,"")));GM_setValue("uct",$("#user-css")[0].value);setTimeout(function(){window.location.reload()}, 200)});
-	GM_registerMenuCommand("重置设定",function(){GM_deleteValue("uct");GM_deleteValue("set");setTimeout(function(){window.location.reload()}, 200)});
+	GM_registerMenuCommand("保存设定",function(){GM_setValue("set",JSON.parse($("#Tri-user-set")[0].value.replace(/\n/g,"")));GM_setValue("uct",$("#Tri-user-css")[0].value);setTimeout(function(){window.location.reload()}, 200)});
+	GM_registerMenuCommand("重置设定",function(){GM_deleteValue("uct");GM_deleteValue("set")});
 	GM_registerMenuCommand("加入星凰",function(){window.open("https://jq.qq.com/?_wv=1027&k=IMqY916N")});
 })();
