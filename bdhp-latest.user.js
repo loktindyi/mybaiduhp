@@ -1,21 +1,24 @@
 // ==UserScript==
 // @name         众里寻她千百度
-// @version      4.21
+// @version      4.22
 // @author       哔哩哔哩@言叶与言
 // @namespace    https://space.bilibili.com/379335206
 // @match        https://www.baidu.com/
 // @match        https://www.baidu.com/?bs_nt=1
 // @match        https://www.baidu.com/?tn=*
+// @run-at       document-start
 // @description  百度首页自定义 不可登录 反馈群：884813590 Tri 科技星凰
-// @supportURL   https://github.com/loktindyi/mybaiduhp/issues
+// @supportURL   https://jq.qq.com/?_wv=1027&k=IMqY916N
 // @updateURL    https://cdn.jsdelivr.net/gh/loktindyi/mybaiduhp@master/bdhp-latest.user.js
 // @require      https://cdn.jsdelivr.net/npm/jquery@3.4.0/dist/jquery.min.js
+// @icon         https://cdn.jsdelivr.net/gh/loktindyi/mybaiduhp@master/Tri.png
 // @grant        GM_addStyle
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @grant        GM_deleteValue
 // @grant        GM_xmlhttpRequest
 // @grant        GM_registerMenuCommand
+// @note         4.22 一些体验优化 不再支持自定义按钮文字
 // @note         4.21 一些细微改动 另外，由于本人男，所以改了标题
 // @note         4.20 大改完成 完全支持保存设定
 // @note         4.10 大改基本完成
@@ -40,13 +43,12 @@
 		_logo: 233, //选择logo
 
 //=========进阶设定=========//
-		_title: "众里寻他千百度", //title自定义
+		_title: "众里寻她千百度", //title自定义
 		_tl: 1, //移除左上角
 		_user: 1, //移除用户
 		_mp_title: "前往哔哩哔哩", //logo链接提示 (_logo = [1, 8])
 		_mp_tar: "_self", //链接跳转方式 {_self, _blank} (_logo != {0|9})
 		_mp_url: "https://www.bilibili.com", //跳转链接 (_logo != {0|-1|-3})
-		_btn: " ", //自定义按钮文字
 		_news: 1, //新闻(非热搜) 黑色/关闭/白色 [0, 2]
 		_ipos: 90, //搜索框位置(上下) [默认值:90]
 		_fz: 18, //搜索框字体大小 [默认值:16]
@@ -95,29 +97,24 @@ background-image: url("https://g.hiphotos.baidu.com/zhidao/pic/item/8644ebf81a4c
 	);
 	//title、搜索框居中、搜索按钮、按钮文字
 	if (_set._title){document.title = _set._title}
-	if ($("#head_wrapper")[0].className == "head_wrapper s-isindex-wrap nologin"){//热榜是开启的？
-		$("#head_wrapper")[0].style = "position: relative; top: " + _set._ipos + "px;";
-	}
-	var btn = $("#su")[0];
 	if (_set._search){GM_addStyle(`
+html{overflow: hidden}
+#head_wrapper .s_btn{opacity: 0}
+.s-hotsearch-wrapper{display: none}
+#s_top_wrap{display: none}
+.s-top-left{display: none}
+#s_side_wrapper{display: none}
+#bottom_layer{display: none}
+#head .head_wrapper{top: ` + _set._ipos + `px}
 body{background-size: 100%; background-attachment: fixed}
 #head_wrapper .ipt_rec, #head_wrapper .soutu-btn{display: none}
 #head_wrapper .soutu-env-nomac #form #kw{background-color: var(--thm-background-color); color: var(--thm-color); border-color: var(--thm-border-color) !important}
 #head_wrapper #form .bdsug-new{border-color: var(--thm-border-color) !important}
 #head_wrapper #form .bdsug-new .bdsug-s, #head_wrapper #form .bdsug-new .bdsug-s span, #head_wrapper #form .bdsug-new .bdsug-s b {color: var(--thm-color); font-size: large}
 #head_wrapper .soutu-env-nomac #form #kw{width: 618px !important; padding-right: 16px !important; border-style: solid; border-radius: 10px; text-align: center}
-#head_wrapper .s_btn{background-color: var(--thm-background-color); color: var(--thm-color)}
-#head_wrapper .s_btn:hover{background-color: var(--thm-background-color); color: var(--thm-color)}
 `)}
-	setTimeout(()=>{while (btn.value == "百度一下"){if (_set._btn){btn.value = _set._btn}}},50); //
 	//移除 滚动条、head左侧、head用户、head阴影、百度热榜、右下键二维码、bottom、可能会出现的news
-	$("html")[0].style.overflow = "hidden";
-	if (_set._tl){$("#s-top-left").remove()}
-	if (_set._user){$("#u1").remove()} else {$("#u1 .lb").remove()}
-	$("#s_top_wrap").remove();
-	$("#s-hotsearch-wrapper").remove();
-	$("#s_qrcode_nologin").remove();
-	$("#bottom_layer").remove();
+	if (_set._user){GM_addStyle(`.s-top-right{display: none}`)} else {GM_addStyle(`.s-top-right .s-top-login-btn{display: none}`)}
 	if (_set._news){
 		if (_set._news == 1){$("#m").remove()}
 		else if (_set._news == 2){for (var j = 0; j < 4; j++){$("#lm-new .links-link")[j].style.color = "white"}}
@@ -156,7 +153,6 @@ _user 移除用户<br/>
 _mp_title logo链接提示<br/>
 _mp_tar 跳转方式 _self|_blank<br/>
 _mp_url 跳转链接<br/>
-_btn 按钮文字<br/>
 _news 0黑色|1关闭|2白色<br/>
 _ipos 搜索框上下位置<br/>
 _fz 搜索框字体大小 [默认值:16]<br/>
@@ -176,6 +172,6 @@ _lgbdr logo边框圆角大小<br/>
 </div><style id="Tri-userstyle" type="text/css">` + _uct + `</style>`
 							   }});
 	GM_registerMenuCommand("保存设定",function(){GM_setValue("set",JSON.parse($("#Tri-user-set")[0].value.replace(/\n/g,"")));GM_setValue("uct",$("#Tri-user-css")[0].value);setTimeout(function(){window.location.reload()}, 200)});
-	GM_registerMenuCommand("重置设定",function(){GM_deleteValue("uct");GM_deleteValue("set")});
+	GM_registerMenuCommand("重置设定",function(){GM_deleteValue("uct");GM_deleteValue("set");setTimeout(function(){window.location.reload()}, 200)});
 	GM_registerMenuCommand("加入星凰",function(){window.open("https://jq.qq.com/?_wv=1027&k=IMqY916N")});
 })();
