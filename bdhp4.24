@@ -18,7 +18,7 @@
 // @grant        GM_deleteValue
 // @grant        GM_xmlhttpRequest
 // @grant        GM_registerMenuCommand
-// @note         4.24 大幅优化调试样式体验（其实就是照搬了我的新脚本）
+// @note         4.24 不再支持logo边框的设定，你可以使用自定义样式 大幅优化调试样式体验（其实就是照搬了我的新脚本）
 // @note         4.23 一些体验优化 用户引导 鉴于菜单项占用空间太多，删除加入星凰
 // @note         4.22 一些体验优化 不再支持自定义按钮文字
 // @note         4.21 一些细微改动 另外，由于本人男，所以改了标题
@@ -55,8 +55,6 @@
 		_ipos: 90, //搜索框位置(上下) [默认值:90]
 		_fz: 18, //搜索框字体大小 [默认值:16]
 		_logourl: "", //自定义logo
-		_lgbdst: "dashed", //logo边框样式 {solid|dashed|dotted}
-		_lgbdr: 15, //logo边框圆角大小
 }
 	//用户自定义样式默认文本
 	var _uct = `
@@ -75,8 +73,10 @@ background-image: url("https://g.hiphotos.baidu.com/zhidao/pic/item/8644ebf81a4c
 	_uct = GM_getValue("uct",_uct);
 	//预置的必需样式
 	GM_addStyle(`
+@-webkit-keyframes twinkling{0%{opacity:1}50%{opacity:0}100%{opacity:1}}
 #head_wrapper #form .bdsug-new ul{border-top-color: transparent}
 #head_wrapper #form .bdsug-new{background-color: var(--thm-background-color)}
+.Tri-joinus{-webkit-animation: twinkling 1s 2 ease-in-out;box-shadow: 0 0 15px 3px rgba(250,114,152,.4); position: fixed; top: 0; right: 0; width: 6%; height: 5%; outline: none; border: none; border-bottom-left-radius: 8px; color: #fa7298; background-color: rgba(255, 255, 255, 0.6); z-index: 99999}
 .Tri-user-set-help{height: 310px !important; position: fixed;top: 50%; left: 44%; background-color: rgba(255, 255, 255, 0.8); font-size: 83%; text-align: left; z-index: 99999}
 .Tri-user-css-text,.Tri-user-set-text{width: 300px; position: fixed; background-color: rgba(255, 255, 255, 0.8); font-size: 120%; resize: none; outline: none; border-radius: 16px; border-color: white; padding: 15px; z-index: 99999}
 .Tri-user-css-text{height: 650px !important; top: 5%; color: #fa7298; right: 5%}.Tri-user-set-text{height: 600px !important; top: 10%; left: 5%}
@@ -130,7 +130,6 @@ body{background-size: 100%; background-attachment: fixed; float: unset}
 		else if (_lgs == 233){GM_xmlhttpRequest({method: "GET", url: "https://api.bilibili.com/x/web-show/res/locs?pf=0&ids=142", onload: function(r){logo.src = JSON.parse(r.responseText).data[142][0].litpic.replace("http:","https:")}})} //跟随logo
 		else if (_lgs == 666){logo.src = _set.logourl}
 		else if (_lgs > 0){logo.src = logolist[_lgs]}
-		if (_lgs){GM_addStyle(`#head_wrapper #s_lg_img{background-color: var(--thm-background-color); color: var(--thm-border-color); border: 2px; border-style: ` + _set._lgbdst + `; border-radius: ` + _set._lgbdr + `px}`)}; //logo底色
 		if (_lgs == -2 || _lgs > 0){
 			var mp = $("map[name='mp'] area")[0];
 			mp.href = _set._mp_url;
@@ -141,6 +140,7 @@ body{background-size: 100%; background-attachment: fixed; float: unset}
 	//菜单
 	GM_registerMenuCommand("调试样式",function(){//调试样式时，搜索预测将不可用
 		if (!$("#Tri-user-btn")[0]){$("body")[0].innerHTML += `
+<input id="Tri-joinus" type="button" style="display:none" class="Tri-joinus" onclick="window.open('https://jq.qq.com/?_wv=1027&k=IMqY916N')" value="加入星凰">
 <input id="Tri-user-btn" type="button" class="Tri-user-btn" onclick="if ($('#Tri-user-css-div')[0].style.display == 'none'){$('#Tri-user-css-div')[0].style.display = 'block'}else{$('#Tri-user-css-div')[0].style.display = 'none'}">
 <div id="Tri-user-css-div" style="display: block">
 <textarea id="Tri-user-set" class="Tri-user-set-text" type="input">` + JSON.stringify(_set).replace(/,/g,",\n") + `</textarea>
@@ -158,8 +158,6 @@ _news 0黑色|1关闭|2白色<br/>
 _ipos 搜索框上下位置<br/>
 _fz 搜索框字体大小 [默认值:16]<br/>
 _logourl 自定义logo图片地址<br/>
-_lgbdst logo边框样式 solid|dashed|dotted<br/>
-_lgbdr logo边框圆角大小<br/>
 <br/>
 关于logo<br/>
 -2 替换链接可点击但不显示<br/>
@@ -169,7 +167,7 @@ _lgbdr logo边框圆角大小<br/>
 233 跟随哔哩哔哩<br/>
 666 自定义<br/>
 </div>
-<textarea id="Tri-user-css" class="Tri-user-css-text" onkeyup="$('#Tri-userstyle')[0].innerHTML = this.value" type="input">` + _uct + `</textarea>
+<textarea id="Tri-user-css" class="Tri-user-css-text" onfocus="$('#Tri-joinus')[0].style.display= 'block'" onkeyup="$('#Tri-userstyle')[0].innerHTML = this.value" type="input">` + _uct + `</textarea>
 </div><style id="Tri-userstyle" type="text/css">` + _uct + `</style>`
 							   }});
 	GM_registerMenuCommand("保存设定",function(){GM_setValue("set",JSON.parse($("#Tri-user-set")[0].value.replace(/\n/g,"")));GM_setValue("uct",$("#Tri-user-css")[0].value);setTimeout(function(){window.location.reload()}, 200)});
