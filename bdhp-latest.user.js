@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         众里寻她千百度
-// @version      4.22
+// @version      4.24
 // @author       哔哩哔哩@言叶与言
 // @namespace    https://space.bilibili.com/379335206
 // @match        https://www.baidu.com/
@@ -18,6 +18,8 @@
 // @grant        GM_deleteValue
 // @grant        GM_xmlhttpRequest
 // @grant        GM_registerMenuCommand
+// @note         4.24 不再支持logo边框的设定，你可以使用自定义样式 大幅优化调试样式体验（其实就是照搬了我的新脚本）
+// @note         4.23 一些体验优化 用户引导 鉴于菜单项占用空间太多，删除加入星凰
 // @note         4.22 一些体验优化 不再支持自定义按钮文字
 // @note         4.21 一些细微改动 另外，由于本人男，所以改了标题
 // @note         4.20 大改完成 完全支持保存设定
@@ -53,19 +55,17 @@
 		_ipos: 90, //搜索框位置(上下) [默认值:90]
 		_fz: 18, //搜索框字体大小 [默认值:16]
 		_logourl: "", //自定义logo
-		_lgbdst: "dashed", //logo边框样式 {solid|dashed|dotted}
-		_lgbdr: 15, //logo边框圆角大小
 }
 	//用户自定义样式默认文本
 	var _uct = `
-:root{/*当前可定义：前景色（文字）、背景色、边框色*/
---thm-color: #FA7298;
+:root{/*当前可定义：前景色（文字）、背景色、边框色(按顺序)*/
+--thm-color: #FA7298;/*可以百度“色值转换”挑选你喜欢的颜色*/
 --thm-background-color: rgba(250, 114, 152, 0);
 --thm-border-color: rgba(250, 114, 152, 0.7);
 }
-/*body{
+body{/*替换下面引号中的链接可更换图片*/
 background-image: url("https://g.hiphotos.baidu.com/zhidao/pic/item/8644ebf81a4c510f973523a36b59252dd52aa592.jpg")
-}*/
+}
 `;
 	//取得用户设定，取不到则用默认设定
 
@@ -73,13 +73,15 @@ background-image: url("https://g.hiphotos.baidu.com/zhidao/pic/item/8644ebf81a4c
 	_uct = GM_getValue("uct",_uct);
 	//预置的必需样式
 	GM_addStyle(`
+@-webkit-keyframes twinkling{0%{opacity:1}50%{opacity:0}100%{opacity:1}}
 #head_wrapper #form .bdsug-new ul{border-top-color: transparent}
 #head_wrapper #form .bdsug-new{background-color: var(--thm-background-color)}
-.Tri-user-css-div{position: absolute; top: 350px; left: 2%; width: 96%; height: 360px; border: 2px solid var(--thm-border-color); border-radius:15px; background-color: transparent}
-.Tri-user-set-text{width: 20%; height: 340px !important; position: fixed; left: inherit; background-color: transparent; font-size: 150%; color: #fa7298; outline: none; border: none; padding: 10px; resize: none}
-.Tri-user-set-help{width: 15%; height: 360px !important; position: fixed; left: 23.3%; background-color: transparent; font-size: 83%; color: #fa7298; outline: none; border-right: 2px solid var(--thm-border-color); text-align: left}
-.Tri-user-css-text{width: 60%; height: 340px !important; position: absolute; left: 38%; background-color: transparent; font-size: 150%; color: #fa7298; outline: none; border: none; padding: 10px}
-.Tri-user-btn{position: fixed; top: 0; left: 0; width: 10%; height: 10%; outline: none; background-color: transparent}
+.Tri-joinus{-webkit-animation: twinkling 1s 2 ease-in-out;box-shadow: 0 0 15px 3px rgba(250,114,152,.4); position: fixed; top: 0; right: 0; width: 6%; height: 5%; outline: none; border: none; border-bottom-left-radius: 8px; color: #fa7298; background-color: rgba(255, 255, 255, 0.6); z-index: 99999}
+.Tri-user-set-help{height: 310px !important; position: fixed;top: 50%; left: 44%; background-color: rgba(255, 255, 255, 0.8); font-size: 83%; text-align: left; z-index: 99999}
+.Tri-user-css-text,.Tri-user-set-text{width: 300px; position: fixed; background-color: rgba(255, 255, 255, 0.8); font-size: 120%; resize: none; outline: none; border-radius: 16px; border-color: white; padding: 15px; z-index: 99999}
+.Tri-user-css-text{height: 650px !important; top: 5%; color: #fa7298; right: 5%}.Tri-user-set-text{height: 600px !important; top: 10%; left: 5%}
+.Tri-user-css-text:focus{box-shadow: 0 0 15px 3px rgba(250,114,152,.3);}
+.Tri-user-btn{box-shadow: 0 0 15px 3px rgba(250,114,152,.4); position: fixed; top: 0; left: 0; width: 8%; height: 7%; outline: none; border: none; border-bottom-right-radius: 8px; background-color: rgba(255, 255, 255, 0.3); z-index: 99999}
 `);
 	//应用用户样式
 	GM_addStyle(_uct);
@@ -106,7 +108,7 @@ html{overflow: hidden}
 #s_side_wrapper{display: none}
 #bottom_layer{display: none}
 #head .head_wrapper{top: ` + _set._ipos + `px}
-body{background-size: 100%; background-attachment: fixed}
+body{background-size: 100%; background-attachment: fixed; float: unset}
 #head_wrapper .ipt_rec, #head_wrapper .soutu-btn{display: none}
 #head_wrapper .soutu-env-nomac #form #kw{background-color: var(--thm-background-color); color: var(--thm-color); border-color: var(--thm-border-color) !important}
 #head_wrapper #form .bdsug-new{border-color: var(--thm-border-color) !important}
@@ -128,7 +130,6 @@ body{background-size: 100%; background-attachment: fixed}
 		else if (_lgs == 233){GM_xmlhttpRequest({method: "GET", url: "https://api.bilibili.com/x/web-show/res/locs?pf=0&ids=142", onload: function(r){logo.src = JSON.parse(r.responseText).data[142][0].litpic.replace("http:","https:")}})} //跟随logo
 		else if (_lgs == 666){logo.src = _set.logourl}
 		else if (_lgs > 0){logo.src = logolist[_lgs]}
-		if (_lgs){GM_addStyle(`#head_wrapper #s_lg_img{background-color: var(--thm-background-color); color: var(--thm-border-color); border: 2px; border-style: ` + _set._lgbdst + `; border-radius: ` + _set._lgbdr + `px}`)}; //logo底色
 		if (_lgs == -2 || _lgs > 0){
 			var mp = $("map[name='mp'] area")[0];
 			mp.href = _set._mp_url;
@@ -139,12 +140,12 @@ body{background-size: 100%; background-attachment: fixed}
 	//菜单
 	GM_registerMenuCommand("调试样式",function(){//调试样式时，搜索预测将不可用
 		if (!$("#Tri-user-btn")[0]){$("body")[0].innerHTML += `
+<input id="Tri-joinus" type="button" style="display:none" class="Tri-joinus" onclick="window.open('https://jq.qq.com/?_wv=1027&k=IMqY916N')" value="加入星凰">
 <input id="Tri-user-btn" type="button" class="Tri-user-btn" onclick="if ($('#Tri-user-css-div')[0].style.display == 'none'){$('#Tri-user-css-div')[0].style.display = 'block'}else{$('#Tri-user-css-div')[0].style.display = 'none'}">
-<div id="Tri-user-css-div" class="Tri-user-css-div" style="display: block">
+<div id="Tri-user-css-div" style="display: block">
 <textarea id="Tri-user-set" class="Tri-user-set-text" type="input">` + JSON.stringify(_set).replace(/,/g,",\n") + `</textarea>
 <div class="Tri-user-set-help" type="input">
 以下，除特殊说明 0表示关闭 1表示开启<br/>
-<br/>
 _search 开启搜索框自定义样式<br/>
 _logo 选择logo<br/>
 _title title自定义<br/>
@@ -157,8 +158,6 @@ _news 0黑色|1关闭|2白色<br/>
 _ipos 搜索框上下位置<br/>
 _fz 搜索框字体大小 [默认值:16]<br/>
 _logourl 自定义logo图片地址<br/>
-_lgbdst logo边框样式 solid|dashed|dotted<br/>
-_lgbdr logo边框圆角大小<br/>
 <br/>
 关于logo<br/>
 -2 替换链接可点击但不显示<br/>
@@ -168,10 +167,9 @@ _lgbdr logo边框圆角大小<br/>
 233 跟随哔哩哔哩<br/>
 666 自定义<br/>
 </div>
-<textarea id="Tri-user-css" class="Tri-user-css-text" onkeyup="$('#Tri-userstyle')[0].innerHTML = this.value" type="input">` + _uct + `</textarea>
+<textarea id="Tri-user-css" class="Tri-user-css-text" onfocus="$('#Tri-joinus')[0].style.display= 'block'" onkeyup="$('#Tri-userstyle')[0].innerHTML = this.value" type="input">` + _uct + `</textarea>
 </div><style id="Tri-userstyle" type="text/css">` + _uct + `</style>`
 							   }});
 	GM_registerMenuCommand("保存设定",function(){GM_setValue("set",JSON.parse($("#Tri-user-set")[0].value.replace(/\n/g,"")));GM_setValue("uct",$("#Tri-user-css")[0].value);setTimeout(function(){window.location.reload()}, 200)});
 	GM_registerMenuCommand("重置设定",function(){GM_deleteValue("uct");GM_deleteValue("set");setTimeout(function(){window.location.reload()}, 200)});
-	GM_registerMenuCommand("加入星凰",function(){window.open("https://jq.qq.com/?_wv=1027&k=IMqY916N")});
 })();
