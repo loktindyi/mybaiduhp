@@ -1,23 +1,25 @@
 // ==UserScript==
 // @name         众里寻她千百度
-// @version      4.24
+// @version      4.26
 // @author       哔哩哔哩@言叶与言
 // @namespace    https://space.bilibili.com/379335206
 // @match        https://www.baidu.com/
 // @match        https://www.baidu.com/?bs_nt=1
 // @match        https://www.baidu.com/?tn=*
-// @run-at       document-start
 // @description  百度首页自定义 不可登录 反馈群：884813590 Tri 科技星凰
+// @require      https://cdn.jsdelivr.net/npm/jquery@3.4.0/dist/jquery.min.js
 // @supportURL   https://jq.qq.com/?_wv=1027&k=IMqY916N
 // @updateURL    https://cdn.jsdelivr.net/gh/loktindyi/mybaiduhp@master/bdhp-latest.user.js
-// @require      https://cdn.jsdelivr.net/npm/jquery@3.4.0/dist/jquery.min.js
 // @icon         https://cdn.jsdelivr.net/gh/loktindyi/mybaiduhp@master/Tri.png
 // @grant        GM_addStyle
 // @grant        GM_setValue
 // @grant        GM_getValue
+// @grant        GM_listValues
 // @grant        GM_deleteValue
 // @grant        GM_xmlhttpRequest
 // @grant        GM_registerMenuCommand
+// @note         4.26 进行了一轮优化
+// @note         4.25 增加了更新日志
 // @note         4.24 不再支持logo边框的设定，你可以使用自定义样式 大幅优化调试样式体验（其实就是照搬了我的新脚本）
 // @note         4.23 一些体验优化 用户引导 鉴于菜单项占用空间太多，删除加入星凰
 // @note         4.22 一些体验优化 不再支持自定义按钮文字
@@ -34,7 +36,6 @@
 // @note         3.8 解决了3.7无法启用搜索预测的问题
 // @note         3.7 百度改版 重新优化 但搜索预测无法启用
 // ==/UserScript==
-
 
 (function(){
 
@@ -68,7 +69,6 @@ background-image: url("https://g.hiphotos.baidu.com/zhidao/pic/item/8644ebf81a4c
 }
 `;
 	//取得用户设定，取不到则用默认设定
-
 	_set = GM_getValue("set",_set);
 	_uct = GM_getValue("uct",_uct);
 	//预置的必需样式
@@ -76,12 +76,13 @@ background-image: url("https://g.hiphotos.baidu.com/zhidao/pic/item/8644ebf81a4c
 @-webkit-keyframes twinkling{0%{opacity:1}50%{opacity:0}100%{opacity:1}}
 #head_wrapper #form .bdsug-new ul{border-top-color: transparent}
 #head_wrapper #form .bdsug-new{background-color: var(--thm-background-color)}
-.Tri-joinus{-webkit-animation: twinkling 1s 2 ease-in-out;box-shadow: 0 0 15px 3px rgba(250,114,152,.4); position: fixed; top: 0; right: 0; width: 6%; height: 5%; outline: none; border: none; border-bottom-left-radius: 8px; color: #fa7298; background-color: rgba(255, 255, 255, 0.6); z-index: 99999}
-.Tri-user-set-help{height: 310px !important; position: fixed;top: 50%; left: 44%; background-color: rgba(255, 255, 255, 0.8); font-size: 83%; text-align: left; z-index: 99999}
+.Tri-log{position: fixed; top: 1%; left: 30%; text-align: left; background: aliceblue;}
+.Tri-joinus{-webkit-animation: twinkling 1s 2 ease-in-out; box-shadow: 0 0 15px 3px rgba(250,114,152,.4); position: fixed; top: 0; right: 0; width: 6%; height: 5%; outline: none; border: none; border-bottom-left-radius: 8px; color: #fa7298; background-color: rgba(255, 255, 255, 0.6); z-index: 99999}
+.Tri-user-set-help{height: 310px !important; position: fixed;top: 50%; left: 6%; font-size: 83%; text-align: left; z-index: 99999}
 .Tri-user-css-text,.Tri-user-set-text{width: 300px; position: fixed; background-color: rgba(255, 255, 255, 0.8); font-size: 120%; resize: none; outline: none; border-radius: 16px; border-color: white; padding: 15px; z-index: 99999}
 .Tri-user-css-text{height: 650px !important; top: 5%; color: #fa7298; right: 5%}.Tri-user-set-text{height: 600px !important; top: 10%; left: 5%}
 .Tri-user-css-text:focus{box-shadow: 0 0 15px 3px rgba(250,114,152,.3);}
-.Tri-user-btn{box-shadow: 0 0 15px 3px rgba(250,114,152,.4); position: fixed; top: 0; left: 0; width: 8%; height: 7%; outline: none; border: none; border-bottom-right-radius: 8px; background-color: rgba(255, 255, 255, 0.3); z-index: 99999}
+.Tri-user-btn{box-shadow: 0 0 15px 3px rgba(250,114,152,.4); position: fixed; top: 0; left: 0; width: 6%; height: 5%; outline: none; border: none; border-bottom-right-radius: 8px; background-color: rgba(255, 255, 255, 0.3); z-index: 99999}
 `);
 	//应用用户样式
 	GM_addStyle(_uct);
@@ -97,7 +98,7 @@ background-image: url("https://g.hiphotos.baidu.com/zhidao/pic/item/8644ebf81a4c
 		"https://i0.hdslb.com/bfs/archive/90cabec45b3ee36b124b7129495c3f5fb4d9f3bc.png",
 		""
 	);
-	//title、搜索框居中、搜索按钮、按钮文字
+	//title、搜索框居中、搜图按钮、搜索按钮|移除 滚动条、head左侧、head用户、head阴影、百度热榜、右下键二维码、bottom、可能会出现的news
 	if (_set._title){document.title = _set._title}
 	if (_set._search){GM_addStyle(`
 html{overflow: hidden}
@@ -108,14 +109,13 @@ html{overflow: hidden}
 #s_side_wrapper{display: none}
 #bottom_layer{display: none}
 #head .head_wrapper{top: ` + _set._ipos + `px}
-body{background-size: 100%; background-attachment: fixed; float: unset}
+body{background-size: cover; background-attachment: fixed;}
 #head_wrapper .ipt_rec, #head_wrapper .soutu-btn{display: none}
 #head_wrapper .soutu-env-nomac #form #kw{background-color: var(--thm-background-color); color: var(--thm-color); border-color: var(--thm-border-color) !important}
 #head_wrapper #form .bdsug-new{border-color: var(--thm-border-color) !important}
 #head_wrapper #form .bdsug-new .bdsug-s, #head_wrapper #form .bdsug-new .bdsug-s span, #head_wrapper #form .bdsug-new .bdsug-s b {color: var(--thm-color); font-size: large}
 #head_wrapper .soutu-env-nomac #form #kw{width: 618px !important; padding-right: 16px !important; border-style: solid; border-radius: 10px; text-align: center}
 `)}
-	//移除 滚动条、head左侧、head用户、head阴影、百度热榜、右下键二维码、bottom、可能会出现的news
 	if (_set._user){GM_addStyle(`.s-top-right{display: none}`)} else {GM_addStyle(`.s-top-right .s-top-login-btn{display: none}`)}
 	if (_set._news){
 		if (_set._news == 1){$("#m").remove()}
@@ -131,7 +131,7 @@ body{background-size: 100%; background-attachment: fixed; float: unset}
 		else if (_lgs == 666){logo.src = _set.logourl}
 		else if (_lgs > 0){logo.src = logolist[_lgs]}
 		if (_lgs == -2 || _lgs > 0){
-			var mp = $("map[name='mp'] area")[0];
+			var mp = $("area")[0];
 			mp.href = _set._mp_url;
 			mp.target = _set._mp_tar;
 			mp.title = _set._mp_title;
@@ -143,8 +143,10 @@ body{background-size: 100%; background-attachment: fixed; float: unset}
 <input id="Tri-joinus" type="button" style="display:none" class="Tri-joinus" onclick="window.open('https://jq.qq.com/?_wv=1027&k=IMqY916N')" value="加入星凰">
 <input id="Tri-user-btn" type="button" class="Tri-user-btn" onclick="if ($('#Tri-user-css-div')[0].style.display == 'none'){$('#Tri-user-css-div')[0].style.display = 'block'}else{$('#Tri-user-css-div')[0].style.display = 'none'}">
 <div id="Tri-user-css-div" style="display: block">
-<textarea id="Tri-user-set" class="Tri-user-set-text" type="input">` + JSON.stringify(_set).replace(/,/g,",\n") + `</textarea>
-<div class="Tri-user-set-help" type="input">
+<textarea id="Tri-user-set" class="Tri-user-set-text" type="input" onfocus="$('#Tri-user-set-help')[0].style.display = 'block'">` + JSON.stringify(_set).replace(/,/g,",\n") + `</textarea>
+<div id="Tri-user-set-help" class="Tri-user-set-help" style="display: none">
+<span style="cursor: pointer; color: #fa7298" onclick="if($('#Tri-log')[0].style.display == 'none'){$('#Tri-log')[0].style.display = 'block'}else{$('#Tri-log')[0].style.display = 'none'}">查看更新日志</span>
+</br></br>
 以下，除特殊说明 0表示关闭 1表示开启<br/>
 _search 开启搜索框自定义样式<br/>
 _logo 选择logo<br/>
@@ -166,6 +168,14 @@ _logourl 自定义logo图片地址<br/>
 1~4 哔哩哔哩四季<br/>
 233 跟随哔哩哔哩<br/>
 666 自定义<br/>
+</div>
+<div id="Tri-log" class="Tri-log" style="display:none">
+更新日志：</br>
+有功能删减，你可能仍然可以看到那些设置，但它已经失效了，你可以选择备份好你的样式后重置</br>
+4.26 进行了一轮优化</br>
+4.25 增加了更新日志</br>
+4.24 不再支持logo边框的设定，你可以使用自定义样式 大幅优化调试样式体验（其实就是照搬了我的新脚本）</br>
+4.23 一些体验优化 用户引导 鉴于菜单项占用空间太多，删除加入星凰</br>
 </div>
 <textarea id="Tri-user-css" class="Tri-user-css-text" onfocus="$('#Tri-joinus')[0].style.display= 'block'" onkeyup="$('#Tri-userstyle')[0].innerHTML = this.value" type="input">` + _uct + `</textarea>
 </div><style id="Tri-userstyle" type="text/css">` + _uct + `</style>`
