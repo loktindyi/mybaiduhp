@@ -1,0 +1,189 @@
+/*更大的自定义样式窗口*/
+#sp-ac-userstyleTEXT {
+	height: 240px !important;
+}
+
+.op-guide {
+	display: none !important
+}
+
+::-webkit-scrollbar {
+	width: 7px
+}
+
+::-webkit-scrollbar-thumb {
+	background-color: #0004;
+	border-radius: 3px
+}
+
+/**计数器的颜色样式*/
+div .AC-CounterT {
+	background: #FA7298;
+}
+
+/*去白色底*/
+#wrapper #s_tab {
+	background-color: transparent;
+	border-bottom: none;
+}
+
+/*背景图*/
+body {
+	float: none;
+	background-size: cover;
+	background-attachment: fixed;
+	background-image: url('https://img.tujidu.com/image/5f8d99dfba42a.jpg')
+}
+
+/*****窗口背景的透明虚化效果*****/
+body>#wrapper,
+body>.wrap,
+body>#main,
+body #appbar,
+body #hdtbSum {
+	background: rgba(225, 225, 225, 0);
+}
+
+/**隐藏首页的大图标-修复可能导致外援样式异常
+body[baidu] #s_lg_img_new {
+	display: none !important;
+}**/
+
+#wrapper #content_left .result,
+#wrapper #content_left .c-container {
+	width: 680px;
+	background-color: #fff0;
+	border: none;
+	backdrop-filter: none;
+	background-image: linear-gradient(-45deg, transparent 15px, #fff9 0, #fff9 calc(100% - 15px), transparent 0)
+}
+
+/*去右上角·非首页*/
+.wrapper_new #u {
+	display: none;
+}
+
+/*修复单列时{图片..新闻..}tab不对齐 不一定需要*/
+.s_tab_inner {
+	display: none !important;
+	/*我不需要这个tab，所以去掉*/
+	position: absolute;
+	left: 140px
+}
+
+/*更大圆角*/
+#wrapper #content_left .result h3,
+#wrapper #content_left .c-container h3 {
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+	background-color: #f8f8f800
+}
+
+/*去底部白条{帮助 反馈}*/
+#foot {
+	display: none;
+}
+
+/*去底部手动选择页面按钮的白条*/
+.wrapper_new .sam_newgrid~#page {
+	background-color: transparent;
+}
+
+/*去自动翻页功能条*/
+.sp-separator.AC {
+	display: none !important;
+}
+
+/*去除除了本搜索引擎以外的附加3*/
+#sp-ac-container .label_hide {
+	display: none;
+}
+
+/*懒得解释懂的都懂 自己玩吧*/
+#head.s_down {
+	box-shadow: none !important
+		/*background-color:#fff5!important;backdrop-filter: blur(2px)*/
+}
+
+/*卡片阴影
+#wrapper #content_left .c-container:hover,
+#wrapper #content_left .result:hover,
+#wrapper #content_left .c-container:hover article {
+	background-color: #FFFFFF77;
+	box-shadow: 0 0 15px 3px rgba(0, 0, 0, .3);
+	backdrop-filter: blur(3px)
+}*/
+
+#wrapper #content_left .c-container:hover,
+#wrapper #content_left .result:hover,
+#wrapper #content_left .c-container:hover article {
+	border: none;
+	box-shadow: none
+}
+
+/*隐藏logo（仍能点击 在搜索框左边）*/
+#result_logo img {
+	opacity: 0;
+}
+
+/* 输入搜索词时下面的提示 */
+.wrapper_new #form .bdsug-new {
+	border: 0 !important;
+	border-radius: 10px;
+	box-shadow: 0 0 15px 3px rgba(250, 114, 152, .3);
+	position: absolute;
+	left: 6%;
+	top: 55px !important
+}
+
+/* 同上 */
+.bdsug-s,
+.bdsug-s b {
+	color: #fa7298 !important;
+	font-size: large !important
+}
+
+/* 一样 */
+.wrapper_new #form .bdsug-new ul {
+	border-top: none;
+}
+
+/* 搜索框背景 */
+form.fm .s_ipt_wr.bg {
+	background: transparent
+}
+
+
+#kw {
+	width: 680px !important;
+	padding-right: 16px !important;
+	color: #000;
+	background-image: linear-gradient(-45deg, transparent 6px, #fffd 0, #fffd calc(100% - 6px), transparent 0);
+	font-size: 160%;
+	text-align: center
+}
+
+.wrapper_new .s_btn_wr .s_btn {
+	opacity: 0
+}
+
+.wrapper_new .soutu-btn {
+	display: none
+}
+
+.wrapper_new .s_ipt_wr {
+	border: none
+}
+
+.wrapper_new .bdsug-new .bdsug-feedback-wrap span {
+	display: none
+}
+
+body #head {
+	background-color: #0000 !important;
+	backdrop-filter: blur(0px)
+}
+
+#head .head_wrapper {
+	backdrop-filter: blur(0px)
+}
