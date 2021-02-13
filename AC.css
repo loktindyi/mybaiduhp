@@ -3,6 +3,10 @@
 	height: 240px !important;
 }
 
+a {
+	text-decoration: none !important
+}
+
 .op-guide {
 	display: none !important
 }
@@ -55,7 +59,7 @@ body[baidu] #s_lg_img_new {
 	background-color: #fff0;
 	border: none;
 	backdrop-filter: none;
-	background-image: linear-gradient(-45deg, transparent 15px, #fff9 0, #fff9 calc(100% - 15px), transparent 0)
+	background-image: linear-gradient(-45deg, transparent 15px, #fff9 0, #fff9 calc(100% - 15px), transparent 0);
 }
 
 /*去右上角·非首页*/
@@ -128,12 +132,15 @@ body[baidu] #s_lg_img_new {
 
 /* 输入搜索词时下面的提示 */
 .wrapper_new #form .bdsug-new {
-	border: 0 !important;
-	border-radius: 10px;
-	box-shadow: 0 0 15px 3px rgba(250, 114, 152, .3);
 	position: absolute;
-	left: 6%;
-	top: 55px !important
+	left: 7%;
+	top: 55px !important;
+	background-color: #fff0;
+	background-image: linear-gradient(-45deg, transparent 8px, #fffd 0, #fffd calc(100% - 8px), transparent 0);
+	border-radius: 0;
+	border: none !important;
+	position: absolute;
+	top: 55px
 }
 
 /* 同上 */
@@ -152,7 +159,6 @@ body[baidu] #s_lg_img_new {
 form.fm .s_ipt_wr.bg {
 	background: transparent
 }
-
 
 #kw {
 	width: 680px !important;
@@ -175,7 +181,7 @@ form.fm .s_ipt_wr.bg {
 	border: none
 }
 
-.wrapper_new .bdsug-new .bdsug-feedback-wrap span {
+.wrapper_new .bdsug-new .bdsug-feedback-wrap {
 	display: none
 }
 
