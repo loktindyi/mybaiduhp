@@ -54,10 +54,12 @@ body[baidu] #s_lg_img_new {
 }**/
 
 #wrapper #content_left .result,
-#wrapper #content_left .c-container {
+#wrapper #content_left .c-container,
+#wrapper #content_left .c-container article{
 	width: 680px;
 	background-color: #fff0;
-	border: none;
+	border: none !important;
+	box-shadow: none !important;
 	backdrop-filter: none;
 	background-image: linear-gradient(-45deg, transparent 15px, #fff9 0, #fff9 calc(100% - 15px), transparent 0);
 }
@@ -122,7 +124,7 @@ body[baidu] #s_lg_img_new {
 #wrapper #content_left .result:hover,
 #wrapper #content_left .c-container:hover article {
 	border: none;
-	box-shadow: none
+	box-shadow: none !important
 }
 
 /*隐藏logo（仍能点击 在搜索框左边）*/
